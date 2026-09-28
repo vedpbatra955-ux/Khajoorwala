@@ -283,7 +283,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- 5. SMART CHECKOUT (SLOTS & COUPONS) ---
+# --- 5. SMART CHECKOUT (SLOTS, COUPONS & QR CODE) ---
 st.markdown("<hr style='margin: 4rem 0 2rem 0; border: none;'>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 2.2rem;'>🛒 Your Cart</h2>", unsafe_allow_html=True)
 
@@ -342,19 +342,37 @@ else:
             <div style="text-align: center; margin-top: 10px; font-size: 0.85rem; font-weight: 600; opacity: 0.8;">
                 🛡️ Payment Accepted: UPI, Cards, Cash on Delivery
             </div>
-            </div>
+        """, unsafe_allow_html=True)
+        
+        # --- DYNAMIC UPI QR CODE SECTION ---
+        merchant_upi_id = "9210191930@pthdfc" # Wired to the exact ID from your image
+        merchant_name = "Khajoorwala"
+        
+        upi_link = f"upi://pay?pa={merchant_upi_id}&pn={urllib.parse.quote(merchant_name)}&am={final_total}&cu=INR"
+        qr_api_url = f"https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={urllib.parse.quote(upi_link)}"
+        
+        st.markdown(f"""
+        <div style="background: rgba(31,61,43,0.03); padding: 20px; border-radius: 12px; text-align: center; margin: 25px 0; border: 1px dashed rgba(31,61,43,0.2);">
+            <p style="font-weight: 700; font-size: 1.1rem; color: #1F3D2B; margin-bottom: 15px;">Pay Instantly via UPI</p>
+            <img src="{qr_api_url}" style="width: 180px; height: 180px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <p style="font-size: 0.85rem; color: #666; margin-top: 15px; font-weight: 600;">Scan with GPay, PhonePe, or Paytm</p>
+            <p style="font-size: 0.75rem; color: #888; margin-top: 5px;">Amount: <strong>₹{final_total}</strong> will be auto-filled</p>
+        </div>
         """, unsafe_allow_html=True)
         
         # Delivery Slot Picker
-        st.markdown("<br><p style='color: #1F3D2B; font-weight: 700; margin-bottom: 5px;'>🕒 Select Delivery Slot</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #1F3D2B; font-weight: 700; margin-bottom: 5px;'>🕒 Select Delivery Slot</p>", unsafe_allow_html=True)
         delivery_slot = st.selectbox("Preferred Time", ["Morning (9 AM - 12 PM)", "Afternoon (12 PM - 4 PM)", "Evening (4 PM - 8 PM)"], label_visibility="collapsed")
+        
+        # Close the white card box
+        st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
         seller_phone = "919210191930" 
         receipt_lines = [f"▪️ {qty}x {next(p['name'] for p in products if p['id'] == pid)} (₹{next(p['price'] for p in products if p['id'] == pid) * qty})" for pid, qty in st.session_state.cart.items()]
         order_details = "\n".join(receipt_lines)
         
-        message = f"🌴 *New Order for Khajoorwala*\n\n{order_details}\n\n*Subtotal:* ₹{total_price}\n*Discount:* -₹{discount}\n*Total to Pay:* ₹{final_total}\n\n*Preferred Slot:* {delivery_slot}\n\nPlease confirm my order!"
+        message = f"🌴 *New Order for Khajoorwala*\n\n{order_details}\n\n*Subtotal:* ₹{total_price}\n*Discount:* -₹{discount}\n*Total:* ₹{final_total}\n\n*Preferred Slot:* {delivery_slot}\n*Payment Status:* Scanned QR Code / Pay on Delivery\n\nPlease confirm my order! (If paid via QR, I will share the screenshot here)."
         encoded_message = urllib.parse.quote(message)
         
         st.markdown(
@@ -367,6 +385,7 @@ else:
             ">
             Checkout via WhatsApp 📲
             </a>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #888;">Tap to send your order details directly to our team.</p>
             """, unsafe_allow_html=True
         )
 
@@ -413,7 +432,7 @@ st.markdown("<h2 style='text-align: center; margin-bottom: 1.5rem;'>Frequently A
 with st.expander("How long do the dates stay fresh?"):
     st.write("Our dates are packed fresh weekly. When stored in a cool, dry place in their airtight container, they will easily stay fresh for 3 to 6 months. For longer storage, you can keep them in the refrigerator.")
 with st.expander("What are the payment options?"):
-    st.write("For ultimate trust and convenience, we accept UPI payments and Cash on Delivery (COD). We will share the UPI QR code when confirming your order on WhatsApp.")
+    st.write("For ultimate trust and convenience, we accept UPI payments and Cash on Delivery (COD). You can easily scan the QR code at checkout to pay instantly.")
 with st.expander("How long does delivery take?"):
     st.write("Orders placed before 2 PM are typically delivered the same day in Malviya Nagar. Surrounding South Delhi areas are delivered within 24 hours.")
 
