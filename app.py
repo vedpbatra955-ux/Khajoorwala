@@ -8,7 +8,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BG_IMAGE_FILE = os.path.join(CURRENT_DIR, "k2.png")
 
 # Page Config
-st.set_page_config(page_title="Khajoorwala Kataria's | Premium Dates in South Delhi", page_icon="🌴", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Khajoorwala | Premium Dates in South Delhi", page_icon="🌴", layout="wide", initial_sidebar_state="collapsed")
 
 # --- 1. ROYAL OASIS UI & MICRO-ANIMATIONS ---
 def apply_premium_styles(bg_image_path):
@@ -111,13 +111,16 @@ def apply_premium_styles(bg_image_path):
         /* Comparison Table */
         .compare-table {{ width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }}
         .compare-table th {{ background-color: #1F3D2B; color: white; padding: 15px; text-align: left; font-family: 'Playfair Display', serif; font-size: 1.1rem; }}
-        .compare-table td {{ padding: 15px; border-bottom: 1px solid #EAEAEA; font-size: 0.95rem; color: #444; }}
+        .compare-table td {{ padding: 15px; border-bottom: 1px solid #EAEAEA; font-size: 0.95rem; color: #444; min-width: 120px; }}
         .compare-table tr:last-child td {{ border-bottom: none; }}
         
         /* 4-Column Footer */
         .premium-footer {{ background-color: #1F3D2B; color: #FAF5EA; padding: 3rem 2rem; margin: 4rem -4rem -4rem -4rem; font-size: 0.9rem; }}
         .premium-footer p, .premium-footer a, .premium-footer span {{ color: #D1D8D3 !important; text-decoration: none; line-height: 1.8; font-size: 0.9rem; }}
         .premium-footer a:hover {{ color: #B8892B !important; text-decoration: underline; }}
+        
+        /* Mobile Scroll for table */
+        .table-responsive {{ overflow-x: auto; -webkit-overflow-scrolling: touch; }}
         </style>
         """, unsafe_allow_html=True
     )
@@ -130,7 +133,7 @@ st.markdown("<div class='announcement-bar'>✨ Same-day delivery in Malviya Naga
 st.markdown("""
 <div class="animate-fade" style="text-align: center; padding: 3rem 1rem 1.5rem 1rem;">
     <h1 style="font-size: clamp(3.5rem, 8vw, 5.5rem); font-weight: 900; margin-bottom: 0; line-height: 1.1;">
-        Khajoorwala<sup style="font-size: clamp(0.8rem, 2vw, 1.2rem); font-family: 'Inter', sans-serif; font-weight: 700; color: #B8892B; letter-spacing: 1px; margin-left: 8px;">KATARIA'S</sup>
+        Khajoorwala
     </h1>
     <p style="font-size: clamp(1.1rem, 3vw, 1.3rem); color: #2B2B2B; font-weight: 400; max-width: 600px; margin: 1rem auto 2rem auto; line-height: 1.6;">
         Fresh from the farm to your South Delhi doorstep. Premium, hand-selected dates for pure, natural energy.
@@ -148,7 +151,7 @@ st.markdown("""
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
-# --- 3. TRANSPARENT PRODUCT CATALOG ---
+# --- 3. TRANSPARENT PRODUCT CATALOG (DYNAMIC GRID) ---
 products = [
     {
         "id": 1, "name": "The Marathon Date", "price": 40, "unit": "1 piece", "price_per": "₹40 per piece",
@@ -167,79 +170,103 @@ products = [
         "tag": "<span class='badge badge-brown'>👑 Premium</span>",
         "desc": "The 'King of Dates'. Large, soft, and melt-in-your-mouth sweet.",
         "image_file": os.path.join(CURRENT_DIR, "medjool.jpg")
+    },
+    {
+        "id": 4, "name": "Mazafati Dates", "price": 380, "unit": "500g box", "price_per": "₹76 per 100g",
+        "tag": "<span class='badge badge-brown'>✨ Everyday Delight</span>",
+        "desc": "Soft, dark, and naturally sweet with a melt-in-the-mouth texture.",
+        "image_file": os.path.join(CURRENT_DIR, "MAZAFATi.jpg")
+    },
+    {
+        "id": 5, "name": "Kimia Gold", "price": 420, "unit": "500g box", "price_per": "₹84 per 100g",
+        "tag": "<span class='badge badge-gold'>🌟 Premium Quality</span>",
+        "desc": "Premium melt-in-mouth dates, perfect for daily consumption.",
+        "image_file": os.path.join(CURRENT_DIR, "KIMIA.jpg")
     }
 ]
 
-cols = st.columns(3, gap="large")
-for index, product in enumerate(products):
-    with cols[index]:
-        with st.container(border=True):
-            if os.path.exists(product["image_file"]):
-                st.image(product["image_file"], use_container_width=True)
-            else:
-                st.markdown(
-                    """<div style="background-color: #E8ECE9; height: 250px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <span style="color: #1F3D2B; font-size: 0.9rem; font-weight: 600;">📸 Photo Placeholder</span>
-                    </div>""", unsafe_allow_html=True
-                )
-            
-            st.markdown(product['tag'], unsafe_allow_html=True)
-            st.markdown(f"<h3 style='font-size: 1.6rem; margin: 0;'>{product['name']}</h3>", unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div style="margin-top: 4px; margin-bottom: 10px;">
-                <span style="color: #B8892B; font-size: 0.9rem;">★★★★★</span>
-                <span style="color: #2B2B2B; font-size: 0.75rem; margin-left: 5px; opacity: 0.8;">(Fresh batch packed this week)</span>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown(f"<p style='height: 45px; font-size: 0.95rem; line-height: 1.4;'>{product['desc']}</p>", unsafe_allow_html=True)
-            st.markdown("<hr style='margin: 15px 0; border: none; border-top: 1px solid rgba(31,61,43,0.1);'>", unsafe_allow_html=True)
-            
-            bottom_col1, bottom_col2 = st.columns([1, 1.2])
-            with bottom_col1:
-                st.markdown(f"""
-                <div style="line-height: 1.2;">
-                    <span style='font-family: "Playfair Display", serif; font-weight: 900; font-size: 1.5rem;'>₹{product['price']}</span><br>
-                    <span style='font-size: 0.75rem; font-weight: 600; opacity: 0.8;'>{product['unit']}</span><br>
-                    <span style='font-size: 0.7rem; color: #888;'>{product['price_per']}</span>
+# Dynamic Row Generation for unlimited products
+for i in range(0, len(products), 3):
+    cols = st.columns(3, gap="large")
+    row_products = products[i:i+3]
+    
+    for j, product in enumerate(row_products):
+        with cols[j]:
+            with st.container(border=True):
+                if os.path.exists(product["image_file"]):
+                    st.image(product["image_file"], use_container_width=True)
+                else:
+                    st.markdown(
+                        """<div style="background-color: #E8ECE9; height: 250px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                            <span style="color: #1F3D2B; font-size: 0.9rem; font-weight: 600;">📸 Photo Placeholder</span>
+                        </div>""", unsafe_allow_html=True
+                    )
+                
+                st.markdown(product['tag'], unsafe_allow_html=True)
+                st.markdown(f"<h3 style='font-size: 1.6rem; margin: 0;'>{product['name']}</h3>", unsafe_allow_html=True)
+                
+                st.markdown("""
+                <div style="margin-top: 4px; margin-bottom: 10px;">
+                    <span style="color: #B8892B; font-size: 0.9rem;">★★★★★</span>
+                    <span style="color: #2B2B2B; font-size: 0.75rem; margin-left: 5px; opacity: 0.8;">(Fresh batch packed this week)</span>
                 </div>
                 """, unsafe_allow_html=True)
-            with bottom_col2:
-                if st.button("Add to Cart", key=f"add_{product['id']}", use_container_width=True):
-                    pid = product['id']
-                    st.session_state.cart[pid] = st.session_state.cart.get(pid, 0) + 1
-                    st.toast(f"✅ Added to cart! Scroll down to checkout.")
+                
+                st.markdown(f"<p style='height: 45px; font-size: 0.95rem; line-height: 1.4;'>{product['desc']}</p>", unsafe_allow_html=True)
+                st.markdown("<hr style='margin: 15px 0; border: none; border-top: 1px solid rgba(31,61,43,0.1);'>", unsafe_allow_html=True)
+                
+                bottom_col1, bottom_col2 = st.columns([1, 1.2])
+                with bottom_col1:
+                    st.markdown(f"""
+                    <div style="line-height: 1.2;">
+                        <span style='font-family: "Playfair Display", serif; font-weight: 900; font-size: 1.5rem;'>₹{product['price']}</span><br>
+                        <span style='font-size: 0.75rem; font-weight: 600; opacity: 0.8;'>{product['unit']}</span><br>
+                        <span style='font-size: 0.7rem; color: #888;'>{product['price_per']}</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                with bottom_col2:
+                    if st.button("Add to Cart", key=f"add_{product['id']}", use_container_width=True):
+                        pid = product['id']
+                        st.session_state.cart[pid] = st.session_state.cart.get(pid, 0) + 1
+                        st.toast(f"✅ Added to cart! Scroll down to checkout.")
 
 # --- 4. COMPARISON GUIDE ---
 st.markdown("<hr style='margin: 4rem 0 3rem 0; border: none;'>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; margin-bottom: 1rem;' class='animate-fade'>Which Date is Right For You?</h2>", unsafe_allow_html=True)
 st.markdown("""
-<div class="animate-fade">
+<div class="animate-fade table-responsive">
 <table class="compare-table">
     <tr>
         <th>Feature</th>
         <th>The Marathon Date</th>
         <th>Premium Ajwa</th>
         <th>Medjool Caramel</th>
+        <th>Mazafati</th>
+        <th>Kimia Gold</th>
     </tr>
     <tr>
         <td><strong>Best For</strong></td>
-        <td>Pre-workout fuel & running</td>
+        <td>Pre-workout fuel</td>
         <td>Heart health & daily immunity</td>
         <td>Gifting & sweet cravings</td>
+        <td>Daily snacking</td>
+        <td>Smoothies & desserts</td>
     </tr>
     <tr>
         <td><strong>Taste & Texture</strong></td>
         <td>Sweet & salty, firm chew</td>
         <td>Rich, dark, slightly dry</td>
         <td>Caramel-like, ultra soft</td>
+        <td>Soft, dark, juicy</td>
+        <td>Melt-in-mouth sweet</td>
     </tr>
     <tr>
         <td><strong>Size</strong></td>
         <td>Medium</td>
         <td>Small to Medium</td>
         <td>Large (Jumbo)</td>
+        <td>Medium</td>
+        <td>Medium</td>
     </tr>
 </table>
 </div>
@@ -317,7 +344,7 @@ else:
         receipt_lines = [f"▪️ {qty}x {next(p['name'] for p in products if p['id'] == pid)} (₹{next(p['price'] for p in products if p['id'] == pid) * qty})" for pid, qty in st.session_state.cart.items()]
         order_details = "\n".join(receipt_lines)
         
-        message = f"🌴 *New Order for Khajoorwala Kataria's*\n\n{order_details}\n\n*Subtotal:* ₹{total_price}\n*Discount:* -₹{discount}\n*Total to Pay:* ₹{final_total}\n\n*Preferred Slot:* {delivery_slot}\n\nPlease confirm my order!"
+        message = f"🌴 *New Order for Khajoorwala*\n\n{order_details}\n\n*Subtotal:* ₹{total_price}\n*Discount:* -₹{discount}\n*Total to Pay:* ₹{final_total}\n\n*Preferred Slot:* {delivery_slot}\n\nPlease confirm my order!"
         encoded_message = urllib.parse.quote(message)
         
         st.markdown(
@@ -349,11 +376,11 @@ st.markdown("<br><br>", unsafe_allow_html=True)
 story_col, review_col = st.columns([1, 1], gap="large")
 
 with story_col:
-    st.markdown("<h2>The Kataria Story</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>Our Story</h2>", unsafe_allow_html=True)
     st.markdown("""
     <p style="font-size: 1.05rem; line-height: 1.7; opacity: 0.9;">
     What started as a search for pure, unrefined energy for our own morning runs turned into a passion for sourcing the finest dates in the world. <br><br>
-    We hand-pack every box right here in South Delhi. Whether you are breaking your fast, gifting a loved one, or fueling a marathon, you are getting nature's absolute best.
+    At Khajoorwala, we hand-pack every box right here in South Delhi. Whether you are breaking your fast, gifting a loved one, or fueling a marathon, you are getting nature's absolute best.
     </p>
     """, unsafe_allow_html=True)
 
@@ -387,7 +414,7 @@ st.markdown(f"""
 <div class="premium-footer">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-around; max-width: 1200px; margin: 0 auto; gap: 30px;">
         <div style="flex: 1; min-width: 250px;">
-            <h4 style="color: #B8892B !important; font-family: 'Inter', sans-serif !important; letter-spacing: 1px; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 15px;">Khajoorwala Kataria's</h4>
+            <h4 style="color: #B8892B !important; font-family: 'Inter', sans-serif !important; letter-spacing: 1px; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 15px;">Khajoorwala</h4>
             <p>Premium, hand-selected dates sourced globally and packed fresh locally. Your ultimate source for natural energy.</p>
             <p>📍 Malviya Nagar, New Delhi, 110017</p>
         </div>
@@ -414,7 +441,7 @@ st.markdown(f"""
         </div>
     </div>
     <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: #888 !important;">
-        &copy; 2026 Khajoorwala Kataria's. All rights reserved. 
+        &copy; 2026 Khajoorwala. All rights reserved. 
     </div>
 </div>
 """, unsafe_allow_html=True)
