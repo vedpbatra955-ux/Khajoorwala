@@ -6,6 +6,7 @@ import base64
 # --- FILE PATHS ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BG_IMAGE_FILE = os.path.join(CURRENT_DIR, "k2.png")
+LOGO_FILE = os.path.join(CURRENT_DIR, "KHAJOORWALA.png")
 
 # Page Config
 st.set_page_config(page_title="Khajoorwala | Premium Dates in South Delhi", page_icon="🌴", layout="wide", initial_sidebar_state="collapsed")
@@ -127,14 +128,23 @@ def apply_premium_styles(bg_image_path):
 
 apply_premium_styles(BG_IMAGE_FILE)
 
-# --- 2. ANNOUNCEMENT & HERO SECTION ---
+# --- 2. ANNOUNCEMENT & HERO SECTION (WITH LOGO) ---
 st.markdown("<div class='announcement-bar'>✨ Same-day delivery in Malviya Nagar for orders before 2 PM ✨</div>", unsafe_allow_html=True)
 
-st.markdown("""
+# Encode Logo for Header
+logo_base64 = ""
+if os.path.exists(LOGO_FILE):
+    with open(LOGO_FILE, "rb") as f:
+        logo_base64 = base64.b64encode(f.read()).decode()
+
+if logo_base64:
+    hero_title_html = f'<img src="data:image/png;base64,{logo_base64}" style="width: 100%; max-width: 450px; height: auto; margin: 0 auto; display: block; margin-bottom: 15px;" alt="Khajoorwala">'
+else:
+    hero_title_html = '<h1 style="font-size: clamp(3.5rem, 8vw, 5.5rem); font-weight: 900; margin-bottom: 0; line-height: 1.1;">Khajoorwala</h1>'
+
+st.markdown(f"""
 <div class="animate-fade" style="text-align: center; padding: 3rem 1rem 1.5rem 1rem;">
-    <h1 style="font-size: clamp(3.5rem, 8vw, 5.5rem); font-weight: 900; margin-bottom: 0; line-height: 1.1;">
-        Khajoorwala
-    </h1>
+    {hero_title_html}
     <p style="font-size: clamp(1.1rem, 3vw, 1.3rem); color: #2B2B2B; font-weight: 400; max-width: 600px; margin: 1rem auto 2rem auto; line-height: 1.6;">
         Fresh from the farm to your South Delhi doorstep. Premium, hand-selected dates for pure, natural energy.
     </p>
