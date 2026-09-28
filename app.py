@@ -10,42 +10,42 @@ BG_IMAGE_FILE = os.path.join(CURRENT_DIR, "k2.png")
 # Page Config
 st.set_page_config(page_title="Khajoorwala Kataria's | Premium Dates in South Delhi", page_icon="🌴", layout="wide", initial_sidebar_state="collapsed")
 
-# --- 1. ROYAL OASIS UI / CSS INJECTION ---
+# --- 1. ROYAL OASIS UI & MICRO-ANIMATIONS ---
 def apply_premium_styles(bg_image_path):
     bg_css = ""
     if os.path.exists(bg_image_path):
         with open(bg_image_path, "rb") as f:
             encoded = base64.b64encode(f.read()).decode()
         
-        # Warm Cream (#FAF5EA) overlay on the watermark
         bg_css = f"""
         [data-testid="stAppViewContainer"] {{
-            background-image: linear-gradient(rgba(250,245,234,0.95), rgba(250,245,234,0.95)), url('data:image/png;base64,{encoded}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-color: #FAF5EA;
+            background-image: linear-gradient(rgba(250,245,234,0.96), rgba(250,245,234,0.96)), url('data:image/png;base64,{encoded}');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            background-attachment: fixed; background-color: #FAF5EA;
         }}
         """
     else:
-        bg_css = """
-        [data-testid="stAppViewContainer"] { background-color: #FAF5EA; }
-        """
+        bg_css = """[data-testid="stAppViewContainer"] { background-color: #FAF5EA; }"""
     
     st.markdown(
         f"""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;900&display=swap');
         
         {bg_css}
         
-        #MainMenu {{visibility: hidden;}}
-        header {{visibility: hidden;}}
-        footer {{visibility: hidden;}}
+        #MainMenu {{visibility: hidden;}} header {{visibility: hidden;}} footer {{visibility: hidden;}}
+        
+        /* Smooth Fade-in Animation */
+        @keyframes fadeInUp {{
+            from {{ opacity: 0; transform: translateY(15px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        .animate-fade {{ animation: fadeInUp 0.6s ease-out forwards; }}
         
         /* Typography */
-        * {{ font-family: 'Inter', sans-serif; color: #2B2B2B; }}
+        * {{ font-family: 'Inter', sans-serif; }}
+        p, span, div {{ color: #2B2B2B; }}
         h1, h2, h3, h4 {{ font-family: 'Playfair Display', serif !important; color: #1F3D2B !important; }}
         
         /* Announcement Strip */
@@ -59,8 +59,7 @@ def apply_premium_styles(bg_image_path):
         .trust-bar {{
             display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;
             padding: 20px 10px; border-top: 1px solid rgba(184, 137, 43, 0.2); 
-            border-bottom: 1px solid rgba(184, 137, 43, 0.2);
-            background-color: transparent; margin-bottom: 4rem;
+            border-bottom: 1px solid rgba(184, 137, 43, 0.2); background-color: transparent; margin-bottom: 4rem;
             font-size: 0.95rem; color: #1F3D2B; font-weight: 600; text-align: center;
         }}
         
@@ -69,32 +68,36 @@ def apply_premium_styles(bg_image_path):
             border-radius: 14px !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
             border: 1px solid rgba(31, 61, 43, 0.08) !important; background-color: #FFFFFF;
             transition: all 0.3s ease !important; overflow: hidden; padding: 15px;
+            animation: fadeInUp 0.5s ease-out forwards;
         }}
         div[data-testid="stVerticalBlockBorderWrapper"]:hover {{
             transform: translateY(-6px); box-shadow: 0 15px 35px rgba(31, 61, 43, 0.1) !important;
             border: 1px solid rgba(184, 137, 43, 0.4) !important;
         }}
 
-        /* Solid Green Buttons -> Gold on Hover */
+        /* Buttons (Fixed text color) */
         .stButton > button {{
             border-radius: 8px !important; border: none !important;
-            color: #FFFFFF !important; background-color: #1F3D2B !important;
-            font-weight: 700 !important; text-transform: uppercase; font-size: 0.9rem !important;
-            transition: all 0.3s ease; letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(31,61,43,0.2);
+            background-color: #1F3D2B !important;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(31,61,43,0.2);
         }}
-        .stButton > button:hover {{ 
-            background-color: #B8892B !important; color: #FFFFFF !important; 
-            box-shadow: 0 6px 15px rgba(184, 137, 43, 0.3);
+        .stButton > button p, .stButton > button span, .stButton > button div {{
+            color: #FFFFFF !important;
+            font-weight: 700 !important; text-transform: uppercase; font-size: 0.9rem !important; letter-spacing: 0.5px;
         }}
+        .stButton > button:hover {{ background-color: #B8892B !important; box-shadow: 0 6px 15px rgba(184, 137, 43, 0.3); }}
         
-        /* Cart +/- Buttons (Keep them subtle) */
+        /* Quantity Buttons (Fixed text color) */
         .qty-btn .stButton > button {{
-            padding: 0 !important; font-size: 1.2rem !important; border: none !important; box-shadow: none !important;
-            background-color: #E8EBE9 !important; color: #1F3D2B !important; border-radius: 50% !important;
+            padding: 0 !important; border: none !important; box-shadow: none !important;
+            background-color: #E8EBE9 !important; border-radius: 50% !important;
             width: 32px !important; height: 32px !important; min-height: 32px !important;
         }}
-        .qty-btn .stButton > button:hover {{ background-color: #1F3D2B !important; color: white !important; }}
+        .qty-btn .stButton > button p, .qty-btn .stButton > button span {{
+            color: #1F3D2B !important; font-size: 1.2rem !important; text-transform: none;
+        }}
+        .qty-btn .stButton > button:hover {{ background-color: #1F3D2B !important; }}
+        .qty-btn .stButton > button:hover p, .qty-btn .stButton > button:hover span {{ color: #FFFFFF !important; }}
         
         /* Badges */
         .badge {{
@@ -105,23 +108,27 @@ def apply_premium_styles(bg_image_path):
         .badge-green {{ background-color: #E8ECE9; color: #1F3D2B; border: 1px solid rgba(31,61,43,0.2); }}
         .badge-brown {{ background-color: #F3EBE6; color: #4A2C1A; border: 1px solid rgba(74,44,26,0.2); }}
         
-        /* Footer */
-        .footer-text {{
-            text-align: center; color: #2B2B2B; font-size: 0.85rem; line-height: 1.8;
-            margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(31,61,43,0.1);
-        }}
+        /* Comparison Table */
+        .compare-table {{ width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }}
+        .compare-table th {{ background-color: #1F3D2B; color: white; padding: 15px; text-align: left; font-family: 'Playfair Display', serif; font-size: 1.1rem; }}
+        .compare-table td {{ padding: 15px; border-bottom: 1px solid #EAEAEA; font-size: 0.95rem; color: #444; }}
+        .compare-table tr:last-child td {{ border-bottom: none; }}
+        
+        /* 4-Column Footer */
+        .premium-footer {{ background-color: #1F3D2B; color: #FAF5EA; padding: 3rem 2rem; margin: 4rem -4rem -4rem -4rem; font-size: 0.9rem; }}
+        .premium-footer p, .premium-footer a, .premium-footer span {{ color: #D1D8D3 !important; text-decoration: none; line-height: 1.8; font-size: 0.9rem; }}
+        .premium-footer a:hover {{ color: #B8892B !important; text-decoration: underline; }}
         </style>
-        """,
-        unsafe_allow_html=True
+        """, unsafe_allow_html=True
     )
 
 apply_premium_styles(BG_IMAGE_FILE)
 
 # --- 2. ANNOUNCEMENT & HERO SECTION ---
-st.markdown("<div class='announcement-bar'>✨ Free delivery in Malviya Nagar on orders above ₹500 ✨</div>", unsafe_allow_html=True)
+st.markdown("<div class='announcement-bar'>✨ Same-day delivery in Malviya Nagar for orders before 2 PM ✨</div>", unsafe_allow_html=True)
 
 st.markdown("""
-<div style="text-align: center; padding: 3rem 1rem 1.5rem 1rem;">
+<div class="animate-fade" style="text-align: center; padding: 3rem 1rem 1.5rem 1rem;">
     <h1 style="font-size: clamp(3.5rem, 8vw, 5.5rem); font-weight: 900; margin-bottom: 0; line-height: 1.1;">
         Khajoorwala<sup style="font-size: clamp(0.8rem, 2vw, 1.2rem); font-family: 'Inter', sans-serif; font-weight: 700; color: #B8892B; letter-spacing: 1px; margin-left: 8px;">KATARIA'S</sup>
     </h1>
@@ -129,7 +136,7 @@ st.markdown("""
         Fresh from the farm to your South Delhi doorstep. Premium, hand-selected dates for pure, natural energy.
     </p>
 </div>
-<div class="trust-bar">
+<div class="trust-bar animate-fade">
     <span>🌿 Hand-Selected Quality</span>
     <span>🚫 No Preservatives</span>
     <span>🛵 Fast Local Delivery</span>
@@ -141,22 +148,22 @@ st.markdown("""
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
-# --- 3. PRODUCT CATALOG ---
+# --- 3. TRANSPARENT PRODUCT CATALOG ---
 products = [
     {
-        "id": 1, "name": "The Marathon Date", "price": 40, "unit": "per piece",
+        "id": 1, "name": "The Marathon Date", "price": 40, "unit": "1 piece", "price_per": "₹40 per piece",
         "tag": "<span class='badge badge-gold'>🔥 Best Seller</span>",
         "desc": "Nature's Energy Gel. 1 Premium Pitted Date + Sea Salt.",
         "image_file": os.path.join(CURRENT_DIR, "marathon.jpg")
     },
     {
-        "id": 2, "name": "Premium Ajwa", "price": 850, "unit": "500g box",
+        "id": 2, "name": "Premium Ajwa", "price": 850, "unit": "500g box", "price_per": "₹170 per 100g",
         "tag": "<span class='badge badge-green'>✈️ Imported</span>",
         "desc": "The 'Holy Date'. Authentic, rich, and deeply healing.",
         "image_file": os.path.join(CURRENT_DIR, "ajwa.jpg")
     },
     {
-        "id": 3, "name": "Medjool Caramel", "price": 950, "unit": "500g box",
+        "id": 3, "name": "Medjool Caramel", "price": 950, "unit": "500g box", "price_per": "₹190 per 100g",
         "tag": "<span class='badge badge-brown'>👑 Premium</span>",
         "desc": "The 'King of Dates'. Large, soft, and melt-in-your-mouth sweet.",
         "image_file": os.path.join(CURRENT_DIR, "medjool.jpg")
@@ -164,7 +171,6 @@ products = [
 ]
 
 cols = st.columns(3, gap="large")
-
 for index, product in enumerate(products):
     with cols[index]:
         with st.container(border=True):
@@ -172,51 +178,80 @@ for index, product in enumerate(products):
                 st.image(product["image_file"], use_container_width=True)
             else:
                 st.markdown(
-                    """
-                    <div style="background-color: #E8ECE9; height: 250px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                    """<div style="background-color: #E8ECE9; height: 250px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                         <span style="color: #1F3D2B; font-size: 0.9rem; font-weight: 600;">📸 Photo Placeholder</span>
-                    </div>
-                    """, unsafe_allow_html=True
+                    </div>""", unsafe_allow_html=True
                 )
             
             st.markdown(product['tag'], unsafe_allow_html=True)
             st.markdown(f"<h3 style='font-size: 1.6rem; margin: 0;'>{product['name']}</h3>", unsafe_allow_html=True)
             
-            # Star Rating & Freshness Line
             st.markdown("""
             <div style="margin-top: 4px; margin-bottom: 10px;">
                 <span style="color: #B8892B; font-size: 0.9rem;">★★★★★</span>
-                <span style="color: #2B2B2B; font-size: 0.75rem; margin-left: 5px; opacity: 0.8;">(Fresh stock - packed this week)</span>
+                <span style="color: #2B2B2B; font-size: 0.75rem; margin-left: 5px; opacity: 0.8;">(Fresh batch packed this week)</span>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown(f"<p style='height: 45px; font-size: 0.95rem; line-height: 1.4;'>{product['desc']}</p>", unsafe_allow_html=True)
-                
             st.markdown("<hr style='margin: 15px 0; border: none; border-top: 1px solid rgba(31,61,43,0.1);'>", unsafe_allow_html=True)
             
             bottom_col1, bottom_col2 = st.columns([1, 1.2])
             with bottom_col1:
                 st.markdown(f"""
-                <div style="line-height: 1;">
+                <div style="line-height: 1.2;">
                     <span style='font-family: "Playfair Display", serif; font-weight: 900; font-size: 1.5rem;'>₹{product['price']}</span><br>
-                    <span style='font-size: 0.8rem; font-weight: 600; opacity: 0.7;'>{product['unit']}</span>
+                    <span style='font-size: 0.75rem; font-weight: 600; opacity: 0.8;'>{product['unit']}</span><br>
+                    <span style='font-size: 0.7rem; color: #888;'>{product['price_per']}</span>
                 </div>
                 """, unsafe_allow_html=True)
             with bottom_col2:
                 if st.button("Add to Cart", key=f"add_{product['id']}", use_container_width=True):
                     pid = product['id']
-                    if pid in st.session_state.cart:
-                        st.session_state.cart[pid] += 1
-                    else:
-                        st.session_state.cart[pid] = 1
+                    st.session_state.cart[pid] = st.session_state.cart.get(pid, 0) + 1
                     st.toast(f"✅ Added to cart! Scroll down to checkout.")
 
-# --- 4. ADVANCED CHECKOUT & CART ---
+# --- 4. COMPARISON GUIDE ---
+st.markdown("<hr style='margin: 4rem 0 3rem 0; border: none;'>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; margin-bottom: 1rem;' class='animate-fade'>Which Date is Right For You?</h2>", unsafe_allow_html=True)
+st.markdown("""
+<div class="animate-fade">
+<table class="compare-table">
+    <tr>
+        <th>Feature</th>
+        <th>The Marathon Date</th>
+        <th>Premium Ajwa</th>
+        <th>Medjool Caramel</th>
+    </tr>
+    <tr>
+        <td><strong>Best For</strong></td>
+        <td>Pre-workout fuel & running</td>
+        <td>Heart health & daily immunity</td>
+        <td>Gifting & sweet cravings</td>
+    </tr>
+    <tr>
+        <td><strong>Taste & Texture</strong></td>
+        <td>Sweet & salty, firm chew</td>
+        <td>Rich, dark, slightly dry</td>
+        <td>Caramel-like, ultra soft</td>
+    </tr>
+    <tr>
+        <td><strong>Size</strong></td>
+        <td>Medium</td>
+        <td>Small to Medium</td>
+        <td>Large (Jumbo)</td>
+    </tr>
+</table>
+</div>
+""", unsafe_allow_html=True)
+
+
+# --- 5. SMART CHECKOUT (SLOTS & COUPONS) ---
 st.markdown("<hr style='margin: 4rem 0 2rem 0; border: none;'>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 2.2rem;'>🛒 Your Cart</h2>", unsafe_allow_html=True)
 
 if not st.session_state.cart:
-    st.markdown("<p style='text-align: center; font-size: 1.1rem; opacity: 0.8;'>Your cart is currently empty. Add some dates above to fuel up!</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1.1rem; opacity: 0.8;'>Your cart is currently empty.</p>", unsafe_allow_html=True)
 else:
     cart_col1, cart_col2, cart_col3 = st.columns([1, 2, 1])
     with cart_col2:
@@ -236,8 +271,7 @@ else:
                     st.markdown('<div class="qty-btn">', unsafe_allow_html=True)
                     if st.button("➖", key=f"minus_{pid}"):
                         st.session_state.cart[pid] -= 1
-                        if st.session_state.cart[pid] == 0:
-                            del st.session_state.cart[pid]
+                        if st.session_state.cart[pid] == 0: del st.session_state.cart[pid]
                         st.rerun()
                     st.markdown('</div>', unsafe_allow_html=True)
                 with row_col3:
@@ -252,31 +286,38 @@ else:
                     st.markdown(f"<div style='text-align: right; font-weight: 700; font-size: 1.1rem;'>₹{item_total}</div>", unsafe_allow_html=True)
                 st.markdown("<div style='border-bottom: 1px dashed rgba(31,61,43,0.1); margin: 10px 0;'></div>", unsafe_allow_html=True)
         
-        FREE_DELIVERY_THRESHOLD = 500
-        if total_price < FREE_DELIVERY_THRESHOLD:
-            amount_needed = FREE_DELIVERY_THRESHOLD - total_price
-            st.markdown(f"<p style='text-align: center; color: #B8892B; font-weight: 600; font-size: 0.9rem; margin-bottom: 5px;'>Add ₹{amount_needed} more to unlock FREE Delivery!</p>", unsafe_allow_html=True)
-            st.progress(int((total_price / FREE_DELIVERY_THRESHOLD) * 100))
-        else:
-            st.markdown("<p style='text-align: center; color: #1F3D2B; font-weight: 700; font-size: 1rem; margin-bottom: 5px;'>🎉 You have unlocked FREE Delivery!</p>", unsafe_allow_html=True)
-            st.progress(100)
+        # Coupon Logic
+        coupon = st.text_input("Gift Card or Discount Code", placeholder="e.g. FIRST50")
+        discount = 0
+        if coupon.strip().upper() == "FIRST50":
+            discount = 50
+            st.success("✅ ₹50 Welcome Discount Applied!")
+        elif coupon:
+            st.error("Invalid code.")
+            
+        final_total = total_price - discount
 
         st.markdown(f"""
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 2px solid #1F3D2B;">
-                <span style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem;">Total Amount</span>
-                <span style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.8rem; color: #B8892B;">₹{total_price}</span>
+                <span style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem;">Final Amount</span>
+                <span style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.8rem; color: #B8892B;">₹{final_total}</span>
             </div>
             <div style="text-align: center; margin-top: 10px; font-size: 0.85rem; font-weight: 600; opacity: 0.8;">
-                🛡️ Payment Accepted: UPI, Cash on Delivery
+                🛡️ Payment Accepted: UPI, Cards, Cash on Delivery
             </div>
             </div>
         """, unsafe_allow_html=True)
+        
+        # Delivery Slot Picker
+        st.markdown("<br><p style='color: #1F3D2B; font-weight: 700; margin-bottom: 5px;'>🕒 Select Delivery Slot</p>", unsafe_allow_html=True)
+        delivery_slot = st.selectbox("Preferred Time", ["Morning (9 AM - 12 PM)", "Afternoon (12 PM - 4 PM)", "Evening (4 PM - 8 PM)"], label_visibility="collapsed")
         
         st.markdown("<br>", unsafe_allow_html=True)
         seller_phone = "919210191930" 
         receipt_lines = [f"▪️ {qty}x {next(p['name'] for p in products if p['id'] == pid)} (₹{next(p['price'] for p in products if p['id'] == pid) * qty})" for pid, qty in st.session_state.cart.items()]
         order_details = "\n".join(receipt_lines)
-        message = f"🌴 *New Order for Khajoorwala Kataria's*\n\nHi! I would like to place an order:\n\n{order_details}\n\n*Total: ₹{total_price}*\n\nPlease confirm my order!"
+        
+        message = f"🌴 *New Order for Khajoorwala Kataria's*\n\n{order_details}\n\n*Subtotal:* ₹{total_price}\n*Discount:* -₹{discount}\n*Total to Pay:* ₹{final_total}\n\n*Preferred Slot:* {delivery_slot}\n\nPlease confirm my order!"
         encoded_message = urllib.parse.quote(message)
         
         st.markdown(
@@ -292,7 +333,7 @@ else:
             """, unsafe_allow_html=True
         )
 
-# --- 5. WHY DATES & BRAND STORY ---
+# --- 6. WHY DATES & BRAND STORY ---
 st.markdown("<hr style='margin: 4rem 0 3rem 0; border: none;'>", unsafe_allow_html=True)
 
 st.markdown("<h2 style='text-align: center; margin-bottom: 2rem;'>Why Choose Our Dates?</h2>", unsafe_allow_html=True)
@@ -329,7 +370,7 @@ with review_col:
     </div>
     """, unsafe_allow_html=True)
 
-# --- 6. FAQ ---
+# --- 7. FAQ ---
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; margin-bottom: 1.5rem;'>Frequently Asked Questions</h2>", unsafe_allow_html=True)
 with st.expander("How long do the dates stay fresh?"):
@@ -339,14 +380,41 @@ with st.expander("What are the payment options?"):
 with st.expander("How long does delivery take?"):
     st.write("Orders placed before 2 PM are typically delivered the same day in Malviya Nagar. Surrounding South Delhi areas are delivered within 24 hours.")
 
-# --- 7. PROFESSIONAL FOOTER ---
-st.markdown("""
-<div class="footer-text">
-    <strong>Khajoorwala Kataria's</strong><br>
-    Premium Hand-Selected Dates | Malviya Nagar, New Delhi, 110017<br>
-    WhatsApp Support: +91 92101 91930 <br>
-    FSSAI Lic No: [Add Your License Here] <br><br>
-    <em>Freshness guaranteed. Delivered daily across South Delhi.</em><br>
-    <span style="font-size: 0.75rem; margin-top: 10px; display: block;">Follow us on Instagram @KhajoorwalaKatarias</span>
+# --- 8. 4-COLUMN FUNCTIONAL FOOTER (FIXED COLORS) ---
+whatsapp_base = "https://wa.me/919210191930"
+
+st.markdown(f"""
+<div class="premium-footer">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-around; max-width: 1200px; margin: 0 auto; gap: 30px;">
+        <div style="flex: 1; min-width: 250px;">
+            <h4 style="color: #B8892B !important; font-family: 'Inter', sans-serif !important; letter-spacing: 1px; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 15px;">Khajoorwala Kataria's</h4>
+            <p>Premium, hand-selected dates sourced globally and packed fresh locally. Your ultimate source for natural energy.</p>
+            <p>📍 Malviya Nagar, New Delhi, 110017</p>
+        </div>
+        <div style="flex: 1; min-width: 150px;">
+            <h4 style="color: #B8892B !important; font-family: 'Inter', sans-serif !important; letter-spacing: 1px; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 15px;">Shop</h4>
+            <p style="margin-bottom: 8px;">The Marathon Date</p>
+            <p style="margin-bottom: 8px;">Premium Ajwa</p>
+            <p style="margin-bottom: 8px;">Medjool Caramel</p>
+            <p><a href="{whatsapp_base}?text=Hi!%20I%20would%20like%20to%20inquire%20about%20Corporate%20Gifting%20and%20Custom%20Hampers." target="_blank">Corporate Gifting</a></p>
+        </div>
+        <div style="flex: 1; min-width: 150px;">
+            <h4 style="color: #B8892B !important; font-family: 'Inter', sans-serif !important; letter-spacing: 1px; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 15px;">Help</h4>
+            <p><a href="{whatsapp_base}?text=Hi!%20I%20would%20like%20to%20track%20my%20recent%20order." target="_blank">Track Order</a></p>
+            <p><a href="{whatsapp_base}?text=Hi!%20Could%20you%20share%20your%20shipping%20and%20delivery%20policy?" target="_blank">Shipping Policy</a></p>
+            <p><a href="{whatsapp_base}?text=Hi!%20I%20have%20a%20question%20about%20refunds/returns." target="_blank">Refunds & Returns</a></p>
+            <p><a href="{whatsapp_base}?text=Hi!%20I%20need%20dates%20in%20bulk.%20Can%20we%20discuss%20pricing?" target="_blank">Bulk Orders</a></p>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <h4 style="color: #B8892B !important; font-family: 'Inter', sans-serif !important; letter-spacing: 1px; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 15px;">Contact</h4>
+            <p><a href="{whatsapp_base}" target="_blank">📱 WhatsApp: +91 92101 91930</a></p>
+            <p><a href="mailto:hello@khajoorwala.in">✉️ hello@khajoorwala.in</a></p>
+            <p style="margin-top: 15px;">🕒 Mon-Sat, 9 AM - 8 PM</p>
+            <p style="margin-top: 5px; font-size: 0.8rem; color: #888 !important;">FSSAI Lic No: [Add License Here]</p>
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: #888 !important;">
+        &copy; 2026 Khajoorwala Kataria's. All rights reserved. 
+    </div>
 </div>
 """, unsafe_allow_html=True)
